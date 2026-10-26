@@ -6,7 +6,7 @@ import SpiralGalaxy from "./SpiralGalaxy";
 import DarkMatterHalo from "./DarkMatterHalo";
 import StarField from "./StarField";
 import FloatingInfoLabel from "./FloatingInfoLabel";
-import { Info, Eye, EyeOff, RotateCcw, Layers, Radio, Sparkles } from "lucide-react";
+import { Info, Eye, EyeOff } from "lucide-react";
 import { cosmicAudio } from "../utils/audioSynth";
 
 function GalaxyRig({ showHalo, activeLabel, setActiveLabel, spectralMode }) {
@@ -18,8 +18,8 @@ function GalaxyRig({ showHalo, activeLabel, setActiveLabel, spectralMode }) {
         ref={controlsRef}
         enablePan={false}
         enableZoom={true}
-        minDistance={6}
-        maxDistance={30}
+        minDistance={7}
+        maxDistance={28}
         maxPolarAngle={Math.PI / 1.7}
         minPolarAngle={Math.PI / 6}
         autoRotate={false}
@@ -27,24 +27,24 @@ function GalaxyRig({ showHalo, activeLabel, setActiveLabel, spectralMode }) {
         rotateSpeed={0.8}
       />
 
-      {/* Galactic Lighting */}
-      <ambientLight intensity={spectralMode === "xray" ? 0.15 : 0.3} />
-      <pointLight position={[0, 0, 0]} intensity={3.0} color="#ffe8a3" distance={18} />
-      <pointLight position={[12, 10, 10]} intensity={0.7} color="#00f5d4" />
-      <pointLight position={[-12, -10, -10]} intensity={0.9} color="#9d4edd" />
+      {/* Galactic Ambient & Core Lighting */}
+      <ambientLight intensity={spectralMode === "xray" ? 0.15 : 0.45} />
+      <pointLight position={[2.8, 0, 0]} intensity={2.5} color="#fff1c2" distance={22} />
+      <pointLight position={[10, 8, 8]} intensity={0.6} color="#00f5d4" />
+      <pointLight position={[-8, -8, -8]} intensity={0.8} color="#9d4edd" />
 
-      {/* Background Star System */}
-      <StarField count={2800} radius={65} />
+      {/* Full-Bleed Background Starfield */}
+      <StarField count={2600} radius={65} />
 
-      {/* Interactive Galactic Model */}
-      <group rotation={[Math.PI / 4.2, 0, 0]}>
+      {/* Galaxy Group Offset to the Right so it pairs gracefully with left hero typography */}
+      <group position={[2.8, -0.2, 0]} rotation={[Math.PI / 4.4, 0, -0.1]}>
         <SpiralGalaxy spectralMode={spectralMode} />
-        <DarkMatterHalo visible={showHalo} radius={14.5} count={9500} />
+        <DarkMatterHalo visible={showHalo} radius={12.0} count={8000} />
 
-        {/* Hotspot Markers for Educational Exploration */}
+        {/* Floating Hotspots (positioned safely within view) */}
         <FloatingInfoLabel
-          position={[0, 0.45, 0]}
-          title="Supermassive Core"
+          position={[0, 0.4, 0]}
+          title="Galactic Bulge"
           active={activeLabel === "bulge"}
           onClick={() => {
             setActiveLabel(activeLabel === "bulge" ? null : "bulge");
@@ -53,8 +53,8 @@ function GalaxyRig({ showHalo, activeLabel, setActiveLabel, spectralMode }) {
         />
 
         <FloatingInfoLabel
-          position={[4.2, 0.25, -2.1]}
-          title="Stellar Disk (Visible Matter)"
+          position={[2.4, 0.2, -1.0]}
+          title="Stellar Disk"
           active={activeLabel === "disk"}
           onClick={() => {
             setActiveLabel(activeLabel === "disk" ? null : "disk");
@@ -64,8 +64,8 @@ function GalaxyRig({ showHalo, activeLabel, setActiveLabel, spectralMode }) {
 
         {showHalo && (
           <FloatingInfoLabel
-            position={[-8.2, 1.4, 5.8]}
-            title="Dark Matter Halo (Inferred)"
+            position={[-3.2, 0.6, 1.8]}
+            title="Dark Matter Halo"
             active={activeLabel === "halo"}
             onClick={() => {
               setActiveLabel(activeLabel === "halo" ? null : "halo");
@@ -84,8 +84,8 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
 
   const labelDetails = {
     bulge: {
-      title: "Galactic Bulge & SMBH Core",
-      text: "The densely packed central sphere of older stars and central supermassive black hole. Ordinary baryonic mass dominates this inner 1 kpc region, dictating inner orbital dynamics.",
+      title: "Galactic Bulge & Nucleus",
+      text: "The densely packed central sphere of ancient stars and central supermassive black hole. Ordinary baryonic mass dominates this inner 1 kpc region, dictating inner orbital dynamics.",
       badge: "Ordinary Matter Dominated",
       color: "#fbbf24",
     },
@@ -110,37 +110,38 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      {/* Telemetry HUD Badge */}
+      {/* Telemetry HUD Badge: Positioned safely below the 72px navbar */}
       <div
         className="glass-pill telemetry-hud"
         style={{
           position: "absolute",
-          top: "1.25rem",
-          left: "1.5rem",
+          top: "5.5rem",
+          right: "2rem",
           zIndex: 10,
           padding: "0.45rem 0.95rem",
           display: "flex",
           alignItems: "center",
-          gap: "0.85rem",
+          gap: "0.75rem",
           fontSize: "0.72rem",
           fontFamily: "var(--font-mono, monospace)",
           color: "#94a3b8",
           border: "1px solid rgba(255, 255, 255, 0.12)",
-          background: "rgba(3, 5, 12, 0.7)",
+          background: "rgba(5, 7, 15, 0.85)",
+          backdropFilter: "blur(12px)",
         }}
       >
         <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#00f5d4", boxShadow: "0 0 8px #00f5d4" }} />
-          LIVE SIMULATION
+          SIMULATION
         </span>
         <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>|</span>
         <span>MASS: <strong style={{ color: "#ffffff" }}>1.2 × 10¹² M☉</strong></span>
         <span style={{ color: "rgba(255, 255, 255, 0.2)" }}>|</span>
-        <span>DM RATIO: <strong style={{ color: "#c77dff" }}>84.6%</strong></span>
+        <span>DM: <strong style={{ color: "#c77dff" }}>84.6%</strong></span>
       </div>
 
       <Canvas
-        camera={{ position: [0, 9, 17], fov: 46 }}
+        camera={{ position: [0, 8, 16], fov: 46 }}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         dpr={[1, 1.5]}
       >
@@ -160,9 +161,9 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
           className="glass-panel"
           style={{
             position: "absolute",
-            bottom: "7rem",
-            left: "1.5rem",
-            maxWidth: "350px",
+            bottom: "6.5rem",
+            right: "2rem",
+            maxWidth: "340px",
             padding: "1.2rem 1.4rem",
             zIndex: 15,
             animation: "fadeIn 0.25s ease-out",
@@ -182,7 +183,7 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
             </span>
             <button
               onClick={() => setActiveLabel(null)}
-              style={{ color: "#94a3b8", fontSize: "0.8rem", cursor: "pointer" }}
+              style={{ color: "#94a3b8", fontSize: "0.8rem", cursor: "pointer", background: "none", border: "none" }}
               aria-label="Close details"
             >
               ✕
@@ -217,6 +218,7 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
                 color: spectralMode === mode ? "#ffffff" : "#94a3b8",
                 background: spectralMode === mode ? "rgba(157, 78, 221, 0.35)" : "transparent",
                 borderColor: spectralMode === mode ? "#c77dff" : "rgba(255, 255, 255, 0.1)",
+                cursor: "pointer",
               }}
             >
               {mode}
@@ -237,7 +239,7 @@ export default function GalaxyScene({ showHalo = true, onToggleHalo }) {
 
         <div className="scene-hint">
           <Info size={13} color="#00f5d4" />
-          <span>Click glowing markers or drag to rotate 3D view</span>
+          <span>Drag to rotate 3D view</span>
         </div>
       </div>
     </div>

@@ -128,6 +128,7 @@ export default function HeroSection() {
 
       {/* 3D Hero Galaxy Scene */}
       <div className="hero-canvas-container">
+        <div className="hero-canvas-overlay" />
         <GalaxyScene showHalo={showHalo} onToggleHalo={handleToggleHalo} />
       </div>
 
